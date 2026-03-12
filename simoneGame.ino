@@ -20,20 +20,29 @@
 // #define SHOW 101
 // #define GAME 102
 // #define RESET 103
+// #define SOLVED 104
 
 
 
 // int leds[4] = { ledR, ledG, ledB, ledY };
 // int btns[4] = { btnR, btnG, btnB, btnY };
 // bool isPressed[4] = { false, false, false, false };
-// int levels[20] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+// int levels[8] = {
+//   -1,
+//   -1,
+//   -1,
+//   -1,
+//   -1,
+//   -1,
+//   -1,
+//   -1,
+// };
 // int levelIndex = 0;
-// int timeGame = 800;
 // int simoneState = IDLE;
+// int timeGame = 800;
 
 // void idle() {
 //   unsigned long blinkStart = millis();
-//   display.printInt(levelIndex, false);
 //   int Random = random(4);
 //   bool OnOff = true;
 //   digitalWrite(leds[Random], HIGH);
@@ -56,12 +65,12 @@
 
 
 // void blinkGame() {
-  
-//   int Random = random(4);
-//   levels[levelIndex] = Random;
+
 //   unsigned long blink = millis();
 //   bool onOFF = true;
-//   for (int i = 0; i < 20 - (19 - levelIndex); i++) {
+//   for (int i = 0; i < 8; i++) {
+//     int Random = random(4);
+//     levels[i] = Random;
 //     digitalWrite(leds[levels[i]], HIGH);
 //     onOFF = true;
 //     while (onOFF) {
@@ -77,36 +86,20 @@
 //   simoneState = GAME;
 // }
 
-// void game() {
-
-//   for (int i = 0; i < 20 - (19 - levelIndex); i++) {
+// bool game() {
+//   for (int i = 0; i < 8; i++) {
 //     if (whichBtn() == levels[i]) {
 //       Serial.println("yes");
-//       simoneState = SHOW;
 //     } else {
 //       Serial.println("no");
 //       simoneState = RESET;
-//       break;
+//       return false;
 //     }
 //   }
-//   levelIndex++;
-//   if(levelIndex % 5 == 0){
-//     timeGame -= 150;
-//   }
-//   if(simoneState == SHOW){
-//   display.printInt(levelIndex, false);
-//   }
-
+//   return true;
 // }
 
 
-// void Print() {
-//   for (int i = 0; i < 20; i++) {
-//     Serial.print(levels[i]);
-//   }
-//   Serial.println("");
-//   Serial.println(levelIndex);
-// }
 
 // int whichBtn() {
 //   int index = -1;
@@ -135,9 +128,8 @@
 // void reset() {
 //   levelIndex = 0;
 //   timeGame = 800;
-//   display.printInt(levelIndex,false);
 //   blinkOnce();
-//   for (int i = 0; i < 20; i++) {
+//   for (int i = 0; i < 8; i++) {
 //     levels[i] = -1;
 //     if (i < 4) {
 //       isPressed[i] = false;
@@ -179,12 +171,10 @@
 //   }
 //   pinMode(btnR, INPUT_PULLUP);
 //   Serial.begin(9600);
-//   display.clear();
 // }
 
 // void simoneLoop() {
 //   // put your main code here, to run repeatedly:
-//   display.loop();
 //   switch (simoneState) {
 //     case IDLE:
 //       idle();
@@ -195,16 +185,18 @@
 //       break;
 
 //     case GAME:
-//       if (levelIndex >= 20) {
-//         Serial.println("over");
-//       } else {
-//         game();
-//       }
-
+//         if(game()){
+//           Serial.println("succes");
+//           simoneState = 104;
+//         }
 //       break;
 
 //     case RESET:
 //       reset();
 //       break;
+
+//     case SOLVED:
+//     gameState = 100; // in here i will put the next riddle
+//     break;
 //   }
 // }

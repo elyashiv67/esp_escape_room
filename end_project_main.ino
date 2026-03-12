@@ -46,6 +46,7 @@ void loop() {
   case TEMPATURE:
   if(tempatureLoop() == 1){
     Serial.println("succes");
+    gameState = LIGHT;
   }
   break;
 
@@ -53,6 +54,7 @@ void loop() {
   if(lightLoop() == 1){
     Serial.println("succes");
   }
+  break;
 
   }
 }

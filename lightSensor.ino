@@ -9,6 +9,7 @@ int start_light = 0;
 
 void lightSetup() {
   start_light = map(analogRead(light_sensor), 0, 1023, 0, 100);
+  Serial.println("light game start");
 }
 
 int lightLoop() {
