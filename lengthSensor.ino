@@ -14,6 +14,7 @@ int sensorLoop() {
   int length = sonar.ping_cm();
   bool temp = false;
   while (!check) {
+    delay(50);
     length = sonar.ping_cm();
     if (length > 1 && length < 3) {
       Serial.println("hold");
