@@ -2,6 +2,9 @@
 #define DHTPIN D7
 #define DHTTYPE DHT22
 
+#define fanR D5
+#define fanL D6
+
 
 DHT dht(DHTPIN, DHTTYPE);
 float startingTemp = 0;
@@ -10,14 +13,19 @@ void tempatureSetup() {
   // put your setup code here, to run once:
   Serial.println(F("DHTxx test!"));
   dht.begin();
+  pinMode(fanR,OUTPUT);
+  pinMode(fanL, OUTPUT);
   delay(2000);
   startingTemp = dht.readTemperature();
+  Serial.print("starting Temp : ");
   Serial.println(startingTemp);
+  digitalWrite(fanR,HIGH);
+  digitalWrite(fanL,LOW);
 }
 
 int tempatureLoop() {
   // put your main code here, to run repeatedly:
-  delay(2000);
+  delay(500);
   bool result = false;
 
   float C = dht.readTemperature();
@@ -29,8 +37,9 @@ int tempatureLoop() {
   Serial.print("Temperature: ");
   Serial.println(C);
 
-  if (C - startingTemp > 1) {
+  if (startingTemp - C > 1) {
     Serial.println("succes");
+    digitalWrite(fanR,LOW);
     return 1;
   }
 

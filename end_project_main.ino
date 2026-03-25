@@ -4,6 +4,8 @@
 #define LENGTH 101
 #define TEMPATURE 102
 #define LIGHT 103
+#define SIMON 104
+#define END 105
 int gameState = 100;
 
 
@@ -26,6 +28,7 @@ void setup() {
   // wifi_Setup();
   tempatureSetup();
   lightSetup();
+  simoneSetup();
   delay(1000);
   gameState = LIGHT;
 }
@@ -46,6 +49,7 @@ void loop() {
   case TEMPATURE:
   if(tempatureLoop() == 1){
     Serial.println("succes");
+    SendData("riddle", 2);
     gameState = LIGHT;
   }
   break;
@@ -53,8 +57,17 @@ void loop() {
   case LIGHT:
   if(lightLoop() == 1){
     Serial.println("succes");
+    SendData("riddle", 3);
+    gameState = SIMON;
   }
+
+  case SIMON:
+  simoneLoop();
+  //in the simon loop im changing to end
   break;
 
+  case END:
+
+  break;
   }
 }
