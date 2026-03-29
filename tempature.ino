@@ -2,8 +2,8 @@
 #define DHTPIN D7
 #define DHTTYPE DHT22
 
-#define fanR D5
-#define fanL D6
+#define fanR D8
+#define fanL D1
 
 
 DHT dht(DHTPIN, DHTTYPE);
@@ -19,8 +19,8 @@ void tempatureSetup() {
   startingTemp = dht.readTemperature();
   Serial.print("starting Temp : ");
   Serial.println(startingTemp);
-  digitalWrite(fanR,HIGH);
-  digitalWrite(fanL,LOW);
+  // digitalWrite(fanR,HIGH);
+  // digitalWrite(fanL,LOW);
 }
 
 int tempatureLoop() {

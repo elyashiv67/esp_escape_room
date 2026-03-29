@@ -1,20 +1,11 @@
-
-#include <DIYables_4Digit7Segment_74HC595.h>
-
-#define DATA_PIN 9
-#define LATCH_PIN 10
-#define CLK_PIN 11
-
-DIYables_4Digit7Segment_74HC595 display(CLK_PIN, LATCH_PIN, DATA_PIN);
-
-#define ledR 2
-#define ledG 3
-#define ledB 4
-#define ledY 5
-#define btnR 12
-#define btnG 7
-#define btnB 8
-#define btnY 6
+#define ledR D0
+#define ledG D3
+#define ledB D4
+#define ledY D1
+#define btnR D5
+#define btnG D7
+#define btnB D2
+#define btnY D6
 
 #define IDLE 100
 #define SHOW 101
@@ -48,6 +39,7 @@ void idle() {
   digitalWrite(leds[Random], HIGH);
   OnOff = true;
   while (OnOff) {
+    yield(); // הוספתי את זה כי הלוח כל הזמן קרס כי הייתי תקוע על הלולאה
     if (millis() - blinkStart > 500) {
       digitalWrite(leds[Random], LOW);
     }
@@ -74,6 +66,7 @@ void blinkGame() {
     digitalWrite(leds[levels[i]], HIGH);
     onOFF = true;
     while (onOFF) {
+      yield();
       if (millis() - blink > timeGame) {
         digitalWrite(leds[levels[i]], LOW);
         if (millis() - blink > timeGame + 150) {
@@ -104,6 +97,7 @@ bool game() {
 int whichBtn() {
   int index = -1;
   while (index == -1) {
+    yield();
     for (int i = 0; i < 4; i++) {
       if (digitalRead(btns[i]) == HIGH) {
         isPressed[i] = false;
@@ -113,6 +107,7 @@ int whichBtn() {
     for (int i = 0; i < 4; i++) {
       if (digitalRead(btns[i]) == LOW && !isPressed[i]) {
         while (digitalRead(btns[i]) == LOW) {  //פה בעצם הוא מחכה שאני ישחרר את הכפתור ורק אז הוא ממשיך copilot
+          yield();
           digitalWrite(leds[i], HIGH);
         }
         isPressed[i] = true;
@@ -150,6 +145,7 @@ void blinkOnce() {
   }
   on = true;
   while (on) {
+    yield();
     if (millis() - time > 600) {
       for (int i = 0; i < 4; i++) {
         digitalWrite(leds[i], LOW);
@@ -164,13 +160,11 @@ void blinkOnce() {
 
 void simoneSetup() {
   // put your setup code here, to run once:
-  randomSeed(analogRead(A1));
+  randomSeed(analogRead(A0));
   for (int i = 0; i < 4; i++) {
     pinMode(leds[i], OUTPUT);
     pinMode(btns[i], INPUT_PULLUP);
   }
-  pinMode(btnR, INPUT_PULLUP);
-  Serial.begin(9600);
 }
 
 void simoneLoop() {
@@ -187,7 +181,7 @@ void simoneLoop() {
     case GAME:
         if(game()){
           Serial.println("succes");
-          simoneState = 104;
+          simoneState = SOLVED;
         }
       break;
 
@@ -196,7 +190,8 @@ void simoneLoop() {
       break;
 
     case SOLVED:
-    gameState = END; // in here i will put the next riddle
+    SendData("riddle", 3);
+    gameState = LENGTH; // in here i will put the next riddle
     break;
   }
 }

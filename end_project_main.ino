@@ -22,13 +22,13 @@ void setup() {
   Serial.println("BOARD HAS BOOTED SUCCESSFULLY!");
   Serial.println("=================================");
 
-  // Serial.println();  // Print empty lines to clear out boot garbage
-  // Serial.println();
-  // Serial.println("--- PROGRAM START ---");
-  // wifi_Setup();
+  Serial.println();  // Print empty lines to clear out boot garbage
+  Serial.println();
+  Serial.println("--- PROGRAM START ---");
   tempatureSetup();
   lightSetup();
   simoneSetup();
+  wifi_Setup();
   delay(1000);
   gameState = LIGHT;
 }
@@ -38,36 +38,38 @@ void loop() {
   // put your main code here, to run repeatedly:
   switch (gameState) {
 
-  case LENGTH:
-  if(sensorLoop() == 1){
-    Serial.println("{riddle : 1}");
-    SendData("riddle", 1);
-  }
-  gameState = TEMPATURE;
-  break;
+    case LIGHT:
+      if (lightLoop() == 1) {
+        Serial.println("succes");
+        SendData("riddle", 1);
+        gameState = TEMPATURE;
+      }
+      break;
 
-  case TEMPATURE:
-  if(tempatureLoop() == 1){
-    Serial.println("succes");
-    SendData("riddle", 2);
-    gameState = LIGHT;
-  }
-  break;
+    case TEMPATURE:
+      if (tempatureLoop() == 1) {
+        Serial.println("succes");
+        SendData("riddle", 2);
+        gameState = SIMON;
+      }
+      break;
 
-  case LIGHT:
-  if(lightLoop() == 1){
-    Serial.println("succes");
-    SendData("riddle", 3);
-    gameState = SIMON;
-  }
 
-  case SIMON:
-  simoneLoop();
-  //in the simon loop im changing to end
-  break;
+    case SIMON:
+      simoneLoop();
+      //in the simon loop im changing to LENGTH
+      //and the send data function
+      break;
 
-  case END:
+    case LENGTH:
+      if (sensorLoop() == 1) {
+        SendData("riddle", 4);
+      }
+      gameState = END;
+      break;
 
-  break;
+    case END:
+
+      break;
   }
 }
